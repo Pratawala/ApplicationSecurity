@@ -31,7 +31,7 @@ def signin():
     if password == user_lst[current_user]["password"]:
       token = "abcde123"
       response = make_response(redirect(url_for("main")))
-      response.headers["Set-Cookie"] = "token="+token
+      response.set_cookie('token', token, max_age=60*60*12)
       return response
     else:
       return render_template("/frontend/login_fail.html")
