@@ -1,98 +1,50 @@
-from asyncio.windows_events import NULL
 from flask import redirect, render_template
 from flask import Flask, make_response, url_for
 from flask import request, request
+from flask_sqlalchemy import SQLAlchemy
+from Objects.Product import Product
 from Objects.User import User 
 from tools.random_key import get_random_string
 
+
 user_lst = {"abcde123":User("Tester123","Password123",["item1","item2","item3"],True)}
+product_lst = {"item1234":Product("Shoe1",50,100,["S","M","L"]),"item1235":Product("Shoe2",60,101,["S","M"]),"item1236":Product("Shoe3",70,102,["M","L"])}
 app = Flask(__name__)
-          
-@app.route("/admin")
-def main_admin():
-    try:
-      token = request.cookies.get("token")
-      admin_check = user_lst[token].get_admin()
-    except:
-      return redirect(url_for("login"))
-    if admin_check == True:
-      return render_template('/admin/homepage.html')
-    else:
-      return redirect(url_for("main"))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.sqlite3'
+app.config['SQLALCHEMY_BINDS'] = {'product' : 'sqlite:///product.sqlite3'}
+app.config['SECRET_KEY'] = "random string"
+db = SQLAlchemy(app)
 
-@app.route("/")
-def main():
-    return render_template('/frontend/homepage.html')
+class Users_db(db.Model):
+  
+  username = db.Column("username",db.String, primary_key=True)
+  password = db.Column(db.String(100))
+  token = db.Column(db.String(100))
+  admin = db.Column(db.Boolean)
+  cart = db.Column(db.String(1000))
+  
+  def __init__(self,username,password):
+    self.username = username
+    self.password = password
+    self.token = get_random_string(8)
+    self.admin = False
+    self.cart = "test,test2,test3"
 
-@app.route("/login")
-def login():
-  return render_template('frontend/login.html')
 
-@app.route("/signup")
-def signup():
-  return render_template("/frontend/signup.html")
-    
-@app.route("/login/signin",methods=["GET","POST"])
-def signin():
-  current_user = ""
-  username = request.form.get("username")
-  password = request.form.get("password")
-  for user in user_lst:
-    if user_lst[user].get_username() == username:
-      current_user = user
-      break
-  try: 
-    if password == user_lst[current_user].get_password():
-      token = current_user
-      response = make_response(redirect(url_for("main")))
-      response.set_cookie('token', token, max_age=60*60*12) #create cookie, set cookie to expire after 12h(60s x 60m x 12h)
-      return response
-    else:
-      return render_template("/frontend/login_fail.html")
-  except:
-    return render_template("/frontend/login_fail.html")
-@app.route("/signup/create",methods=["GET","POST"])
-def create_account():
-  try:
-    new_username = request.form.get("username")
-    new_password = request.form.get("password")
-    key = get_random_string(8)
-    user_lst[key] = User(new_username,new_password,[],False)
-    return redirect(url_for("login"))
-  except:
-    return redirect(url_for("/500"))
+class Item_db(db.Model):
+  __bind_key__ = 'product'
+  item_id = db.Column("item_id",db.String, primary_key=True)
+  price = db.Column(db.Integer)
+  name = db.Column(db.String(1000))
 
-@app.route("/api/getcart")
-def get_cart():
-  try:
-    token = request.args.get("token")
-    if token in user_lst:
-      user_cart = user_lst[token].get_cart()
-      print(user_cart)
-      return {"usercart":user_cart}
-    elif token == None or token == "" or token == NULL:
-      response = make_response(redirect(url_for("login")))
-      return response
-    else:
-      return redirect(url_for("/500"))
-  except:
-    return redirect(url_for("/500"))
+  def __init__(self,name,price):
+     self.name = name
+     self.price = price
+     self.item_id = get_random_string(12)
 
-@app.route("/cart")
-def cart():
-  try:
-    token = request.cookies.get("token")
-    if token in user_lst:
-      user_cart = user_lst[token].get_cart()
-      return render_template("frontend/cart.html")
-    else:
-      return redirect(url_for("login"))
-  except:
-    return redirect(url_for("internal_server_error"))
+import frontend
+import admin_main
 
 if __name__ == "__main__":
-      app.run("0.0.0.0",443,debug=True)  
-    
-@app.route("/500")
-def internal_server_error():
-  return render_template("frontend/error500.html")
+      db.create_all()
+      app.run("0.0.0.0",443,debug=True) 
