@@ -28,7 +28,8 @@
   }
 
     token = getCookie("token")
-    cart = getcart(token).then(data => cart_create(data))
+    //getcart(token).then(data => cart_create(data))
 </script>
 <div id="cart_table"></div>
+{{user_cart}}
 {% endblock %}
