@@ -61,3 +61,17 @@ def add_item():
     return redirect(url_for("manage"))
   else:
     return redirect(url_for("main"))
+
+@app.route("/admin/api/delete_item")
+def delete_item():
+  is_admin = user_session["admin"]
+  if is_admin == None:
+    return redirect(url_for("login"))
+  elif is_admin == True:
+    item_id = request.args.get("item_id")
+    Item_db.query.filter_by(item_id=item_id).delete()
+    db.session.commit()
+    flash("item succesfully deleted")
+    return redirect(url_for("manage"))
+  else:
+    return redirect(url_for("main"))
