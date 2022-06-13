@@ -2,6 +2,10 @@ from asyncio.windows_events import NULL
 from flask import redirect, render_template
 from flask import Flask, make_response, url_for
 from flask import request, request, flash
+from flask import session as user_session
+from requests import session
+from main import login_manager
+from flask_login import login_required, login_user
 from sqlalchemy import false
 from Objects.Product import Product
 from Objects.User import User
@@ -32,11 +36,13 @@ def signin():
   if exists == True:
     current_user = Users_db.query.get(username)
     if current_user.password == password: 
+      login_user(current_user)
       current_user.token = get_random_string(8)
       db.session.commit()
-      token = current_user.token
-      response = make_response(redirect(url_for("main")))
-      response.set_cookie('token', token, max_age=60*60*24) #create cookie, set cookie to expire after 24h(60s x 60m x 24h)
+      user_session["token"] = current_user.token
+      user_session["admin"] = current_user.admin
+      response = redirect(url_for("main"))
+      ##response.set_cookie('token', token, max_age=60*60*24) #create cookie, set cookie to expire after 24h(60s x 60m x 24h)
       return response
     else:
       return render_template("/frontend/login_fail.html")
@@ -61,7 +67,7 @@ def create_account():
 @app.route("/api/getcart")
 def get_cart():
   try:
-    token = request.args.get("token")
+    token = user_session["token"]
     exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
     if exists == True:
       current_user = db.session.query(Users_db).filter_by(token=token).first()
@@ -76,8 +82,9 @@ def get_cart():
     return redirect(url_for("/internal_server_error"))
 
 @app.route("/cart")
+@login_required
 def cart():
-    token = request.cookies.get("token")
+    token = user_session["token"]
     exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
     if exists == True:
       current_user = db.session.query(Users_db).filter_by(token=token).first()
@@ -96,9 +103,6 @@ def internal_server_error():
 @app.route("/productPage")
 def product_page():
   item_id = request.args.get("item_id")
-  ##product = Item_db("hello",50)
-  ##db.session.add(product)
-  ##db.session.commit()
   product_info = Item_db.query.get(item_id)
   product_info_lst = [product_info.name,product_info.price]
   return render_template("frontend/productPage.html",product_info=product_info_lst)
