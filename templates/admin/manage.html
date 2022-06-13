@@ -17,10 +17,16 @@
   <td>${{item["price"]}}</td>
   </tr>
 {% endfor %}
+create item form
 </table>
 <form action="/admin/api/add_item" method="get">
 <input type="text" name="name">
 <input type="number" name="price">
+<input type="submit">
+</form>
+delete item form
+<form action="/admin/api/delete_item" method="get">
+<input type="text" name="item_id">
 <input type="submit">
 </form>
 </body>
