@@ -1,10 +1,89 @@
-.navbar-brand{
+.home-container {
+    width: 100%;
+    display: flex;
+    overflow: auto;
+    min-height: 100vh;
+    align-items: center;
+    flex-direction: column;
+  }
+  .home-container1 {
+    width: 100%;
+    height: 61px;
+    display: flex;
+    position: relative;
+    align-items: center;
+    border-color: #CC313D;
+    border-style: dashed;
+    border-width: 2px;
+    justify-content: flex-end;
+    background-color: #CC313D;
+  }
+  .home-link {
+    color: #F7C5CC;
+    margin-left: var(--dl-space-space-threeunits);
+    margin-right: var(--dl-space-space-threeunits);
+  }
+  .home-link1 {
+    color: #F7C5CC;
+    margin-right: var(--dl-space-space-threeunits);
+  }
+  .home-container2 {
+    width: 100%;
+    height: 99px;
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+    align-items: center;
+    border-color: #F7C5CC;
+    border-style: dashed;
+    border-width: 2px;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #F7C5CC;
+  }
+  .home-text {
     color: #CC313D;
     font-size: 48px;
-    text-decoration: none;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.nav-item{
-    align-items: right;
-}
+    align-self: center;
+    margin-left: var(--dl-space-space-sixunits);
+    margin-right: var(--dl-space-space-sixunits);
+  }
+  .home-link2 {
+    color: #CC313D;
+    margin-left: var(--dl-space-space-sixunits);
+    margin-right: 0px;
+  }
+  .home-link3 {
+    color: #CC313D;
+    margin-right: 0px;
+  }
+  .home-link4 {
+    color: #CC313D;
+    margin-left: 0px;
+    margin-right: var(--dl-space-space-threeunits);
+  }
+  .home-container3 {
+    right: -1px;
+    width: 100%;
+    border: 2px dashed rgba(120, 120, 120, 0.4);
+    bottom: -1px;
+    height: 99px;
+    display: flex;
+    position: absolute;
+    align-items: flex-end;
+    border-color: #F7C5CC;
+    border-style: dashed;
+    border-width: 2px;
+    flex-direction: row;
+    background-color: #F7C5CC;
+  }
+  .home-pasted-image {
+    width: 827px;
+    height: 332px;
+    margin-top: var(--dl-space-space-oneandhalfunits);
+  }
+  .home-pasted-image1 {
+    width: 45%;
+    height: 229px;
+    margin-top: var(--dl-space-space-fourunits);
+  }
