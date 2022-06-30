@@ -1,25 +1,23 @@
-from flask import redirect, render_template
-from flask import Flask, make_response, url_for
+from flask import Flask
 from flask import request
 from datetime import timedelta
 from flask import session as user_session
 from flask_sqlalchemy import SQLAlchemy
-from Objects.Product import Product
-from Objects.User import User 
 from tools.random_key import get_random_string
 from flask_login import LoginManager
 from urllib.parse import urlparse, urljoin
+from flask_bcrypt import Bcrypt
 
 login_manager = LoginManager()
-user_lst = {"abcde123":User("Tester123","Password123",["item1","item2","item3"],True)}
-product_lst = {"item1234":Product("Shoe1",50,100,["S","M","L"]),"item1235":Product("Shoe2",60,101,["S","M"]),"item1236":Product("Shoe3",70,102,["M","L"])}
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.sqlite3'
 app.config['SQLALCHEMY_BINDS'] = {'product' : 'sqlite:///product.sqlite3'}
-app.config['SECRET_KEY'] = "random string"
+app.config['SECRET_KEY'] = "randP@55string"
 app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_COOKIE_SECURE"] = True
 db = SQLAlchemy(app)
 login_manager.init_app(app)
+bcrypt = Bcrypt(app)
 
 class Users_db(db.Model):
   
@@ -28,16 +26,20 @@ class Users_db(db.Model):
   token = db.Column(db.String(100))
   admin = db.Column(db.Boolean)
   cart = db.Column(db.String(1000))
+  login_attempt = db.Column(db.Integer)
+  active = db.Column(db.Boolean)
   
   def __init__(self,username,password):
     self.username = username
     self.password = password
     self.token = get_random_string(8)
     self.admin = False
-    self.cart = "test,test2,test3"
+    self.cart = ""
+    self.login_attempt = 0
+    self.active = True
   
-  def is_active():
-    return(True)
+  def is_active(self):
+    return(self.active)
 
   def get_id(self):
     return(self.username)
@@ -81,4 +83,4 @@ import admin_main
 
 if __name__ == "__main__":
       db.create_all()
-      app.run("0.0.0.0",443,debug=True) 
+      app.run(debug=True,ssl_context=('cert.pem', 'key.pem'))

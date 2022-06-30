@@ -2,12 +2,8 @@ from __main__ import app
 from flask import Flask, render_template, flash
 from flask import redirect, url_for, request
 from flask_login import login_required
-from requests import session
-from Objects.Product import Product
-from Objects.User import User
-from tools.admin_check import admin_check 
 from tools.random_key import get_random_string
-from main import Item_db, db,product_lst, Users_db
+from main import Item_db, db, Users_db
 from flask import session as user_session
 
 @app.route("/make_admin")
@@ -24,7 +20,10 @@ def make_admin():
 @app.route("/admin")
 @login_required
 def main_admin(): 
-  is_admin = user_session["admin"]
+  try:
+    is_admin = user_session["admin"]
+  except:
+    return redirect(url_for("main"))
   if is_admin == None:
     return redirect(url_for("login"))
   elif is_admin == True:
@@ -47,31 +46,63 @@ def manage():
     return redirect(url_for("main"))
 
 @app.route("/admin/api/add_item")
+@login_required
 def add_item():
-  is_admin = user_session["admin"]
+  try:
+    is_admin = user_session["admin"]
+  except:
+    return redirect(url_for("login"))
   if is_admin == None:
     return redirect(url_for("login"))
   elif is_admin == True:
-    name = request.args.get("name")
-    price = request.args.get("price")
-    product = Item_db(name,price)
-    db.session.add(product)
-    db.session.commit()
-    flash("item sucessfully added")
-    return redirect(url_for("manage"))
+    try:
+      name = request.args.get("name")
+      price = int(request.args.get("price"))
+      product = Item_db(name,price)
+      db.session.add(product)
+      db.session.commit()
+      flash("item sucessfully added")
+      return redirect(url_for("manage"))
+    except:
+      return(redirect(url_for("manage")))
   else:
     return redirect(url_for("main"))
 
 @app.route("/admin/api/delete_item")
+@login_required
 def delete_item():
-  is_admin = user_session["admin"]
+  try:
+    is_admin = user_session["admin"]
+  except:
+    return redirect(url_for("main"))
   if is_admin == None:
     return redirect(url_for("login"))
   elif is_admin == True:
-    item_id = request.args.get("item_id")
-    Item_db.query.filter_by(item_id=item_id).delete()
-    db.session.commit()
-    flash("item succesfully deleted")
-    return redirect(url_for("manage"))
+    try:
+      item_id = request.args.get("item_id")
+      Item_db.query.filter_by(item_id=item_id).delete()
+      db.session.commit()
+      flash("item succesfully deleted")
+      return redirect(url_for("manage"))
+    except:
+      return(redirect(url_for("manage")))
+  else:
+    return redirect(url_for("main"))
+
+@app.route("/admin/account_manage")
+@login_required
+def account_manage():
+  try:
+    is_admin = user_session["admin"]
+  except:
+    return redirect(url_for("main"))
+  if is_admin == None:
+    return redirect(url_for("login"))
+  elif is_admin == True:
+    account_dict = {}
+    raw_account_lst = Users_db.query.all()
+    for i in raw_account_lst:
+      account_dict[i.username] = [i.admin,i.token]
+    return(render_template("admin/account_manage.html",account_dict=account_dict))
   else:
     return redirect(url_for("main"))

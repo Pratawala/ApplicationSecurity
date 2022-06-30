@@ -3,16 +3,10 @@ from flask import redirect, render_template
 from flask import Flask, make_response, url_for
 from flask import request, request, flash
 from flask import session as user_session
-from requests import session
-from main import login_manager
 from flask_login import login_required, login_user
-from sqlalchemy import false
-from Objects.Product import Product
-from Objects.User import User
 from tools.random_key import get_random_string
-import json
 from __main__ import app
-from main import product_lst, user_lst, Users_db, db, Item_db
+from main import Users_db, db, Item_db, bcrypt
 
 @app.route("/")
 def main():
@@ -30,14 +24,23 @@ def signup():
 @app.route("/login/signin",methods=["GET","POST"])
 def signin():
   current_user = ""
-  username = request.form.get("username")
-  password = request.form.get("password")
-  exists = db.session.query(Users_db.username).filter_by(username=username).first() is not None
+  try: 
+    username = request.form.get("username")
+    password = request.form.get("password")
+    exists = db.session.query(Users_db.username).filter_by(username=username).first() is not None
+  except:
+    return(redirect(url_for("login")))
   if exists == True:
     current_user = Users_db.query.get(username)
-    if current_user.password == password: 
+    if current_user.login_attempt > 3:
+      current_user.active = False
+      db.session.commit()
+      flash("Login too many times,account has been deactivated")
+      return redirect(url_for("login"))
+    if bcrypt.check_password_hash(current_user.password,password): 
       login_user(current_user)
       current_user.token = get_random_string(8)
+      current_user.login_attempt = 0
       db.session.commit()
       user_session["token"] = current_user.token
       user_session["admin"] = current_user.admin
@@ -45,6 +48,8 @@ def signin():
       ##response.set_cookie('token', token, max_age=60*60*24) #create cookie, set cookie to expire after 24h(60s x 60m x 24h)
       return response
     else:
+      current_user.login_attempt += 1
+      db.session.commit()
       return render_template("/frontend/login_fail.html")
   return render_template("/frontend/login_fail.html")
 @app.route("/signup/create",methods=["GET","POST"])
@@ -57,7 +62,8 @@ def create_account():
     if exists == True:
       flash('Username already exists')
       return redirect(url_for("signup"))
-    new_user = Users_db(new_username,new_password)
+    new_password_hash = bcrypt.generate_password_hash(new_password)
+    new_user = Users_db(new_username,new_password_hash)
     db.session.add(new_user)
     db.session.commit()
     return redirect(url_for("login"))
