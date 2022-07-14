@@ -44,8 +44,6 @@
   .home-text {
     color: #CC313D;
     font-size: 48px;
-    margin-left: 10%;
-    font-weight: 300;
     align-self: center;
     margin-left: var(--dl-space-space-sixunits);
     margin-right: var(--dl-space-space-sixunits);
