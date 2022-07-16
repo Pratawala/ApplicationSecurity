@@ -1,0 +1,29 @@
+2022-07-14 15:14:26,430 INFO werkzeug Thread-13 : 127.0.0.1 - - [14/Jul/2022 15:14:26] "GET /card_details HTTP/1.1" 200 -
+2022-07-14 15:14:26,459 INFO werkzeug Thread-14 : 127.0.0.1 - - [14/Jul/2022 15:14:26] "[33mGET /static/base.css HTTP/1.1[0m" 404 -
+2022-07-14 15:14:55,629 INFO werkzeug Thread-15 : 127.0.0.1 - - [14/Jul/2022 15:14:55] "[32mPOST /api/add_card HTTP/1.1[0m" 302 -
+2022-07-14 15:14:55,648 INFO werkzeug Thread-16 : 127.0.0.1 - - [14/Jul/2022 15:14:55] "GET / HTTP/1.1" 200 -
+2022-07-14 15:14:55,682 INFO werkzeug Thread-17 : 127.0.0.1 - - [14/Jul/2022 15:14:55] "[33mGET /static/base.css HTTP/1.1[0m" 404 -
+2022-07-14 15:14:58,766 INFO werkzeug Thread-18 : 127.0.0.1 - - [14/Jul/2022 15:14:58] "GET /card_details HTTP/1.1" 200 -
+2022-07-14 15:14:58,789 INFO werkzeug Thread-19 : 127.0.0.1 - - [14/Jul/2022 15:14:58] "[33mGET /static/base.css HTTP/1.1[0m" 404 -
+2022-07-14 15:15:39,535 INFO werkzeug Thread-20 : 127.0.0.1 - - [14/Jul/2022 15:15:39] "GET / HTTP/1.1" 200 -
+2022-07-14 15:15:39,560 INFO werkzeug Thread-21 : 127.0.0.1 - - [14/Jul/2022 15:15:39] "[33mGET /static/base.css HTTP/1.1[0m" 404 -
+2022-07-14 15:16:13,494 INFO werkzeug MainThread :  * Detected change in 'C:\\Users\\Joell\\OneDrive\\Documents\\ApplicationSecurity-main\\frontend.py', reloading
+2022-07-14 15:16:36,426 INFO werkzeug MainThread :  * Restarting with stat
+2022-07-14 15:16:38,766 WARNING werkzeug MainThread :  * Debugger is active!
+2022-07-14 15:16:38,778 INFO werkzeug MainThread :  * Debugger PIN: 232-955-606
+2022-07-14 15:16:39,030 INFO werkzeug Thread-7 :  * Running on https://127.0.0.1:5000/ (Press CTRL+C to quit)
+2022-07-14 15:16:40,906 INFO werkzeug Thread-8 : 127.0.0.1 - - [14/Jul/2022 15:16:40] "GET /card_details HTTP/1.1" 200 -
+2022-07-14 15:16:40,939 INFO werkzeug Thread-9 : 127.0.0.1 - - [14/Jul/2022 15:16:40] "[33mGET /static/base.css HTTP/1.1[0m" 404 -
+2022-07-14 15:16:42,830 INFO werkzeug Thread-10 : 127.0.0.1 - - [14/Jul/2022 15:16:42] "GET / HTTP/1.1" 200 -
+2022-07-14 15:16:42,853 INFO werkzeug Thread-11 : 127.0.0.1 - - [14/Jul/2022 15:16:42] "[33mGET /static/base.css HTTP/1.1[0m" 404 -
+2022-07-14 15:16:43,006 INFO werkzeug Thread-12 : 127.0.0.1 - - [14/Jul/2022 15:16:43] "GET / HTTP/1.1" 200 -
+2022-07-14 15:16:43,027 INFO werkzeug Thread-13 : 127.0.0.1 - - [14/Jul/2022 15:16:43] "[33mGET /static/base.css HTTP/1.1[0m" 404 -
+2022-07-14 15:16:47,606 INFO werkzeug Thread-14 : 127.0.0.1 - - [14/Jul/2022 15:16:47] "GET / HTTP/1.1" 200 -
+2022-07-14 15:16:47,625 INFO werkzeug Thread-15 : 127.0.0.1 - - [14/Jul/2022 15:16:47] "[33mGET /static/base.css HTTP/1.1[0m" 404 -
+2022-07-14 15:16:48,350 INFO werkzeug Thread-16 : 127.0.0.1 - - [14/Jul/2022 15:16:48] "GET / HTTP/1.1" 200 -
+2022-07-14 15:16:48,377 INFO werkzeug Thread-17 : 127.0.0.1 - - [14/Jul/2022 15:16:48] "[33mGET /static/base.css HTTP/1.1[0m" 404 -
+2022-07-14 15:16:51,070 INFO werkzeug Thread-18 : 127.0.0.1 - - [14/Jul/2022 15:16:51] "[32mGET /card_details HTTP/1.1[0m" 302 -
+2022-07-14 15:16:51,086 INFO werkzeug Thread-19 : 127.0.0.1 - - [14/Jul/2022 15:16:51] "GET /login?next=%2Fcard_details HTTP/1.1" 200 -
+2022-07-14 15:16:51,120 INFO werkzeug Thread-20 : 127.0.0.1 - - [14/Jul/2022 15:16:51] "[33mGET /static/base.css HTTP/1.1[0m" 404 -
+2022-07-14 15:16:53,457 INFO werkzeug Thread-21 : 127.0.0.1 - - [14/Jul/2022 15:16:53] "GET / HTTP/1.1" 200 -
+2022-07-14 15:16:53,487 INFO werkzeug Thread-22 : 127.0.0.1 - - [14/Jul/2022 15:16:53] "[33mGET /static/base.css HTTP/1.1[0m" 404 -

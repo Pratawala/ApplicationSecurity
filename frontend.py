@@ -6,7 +6,7 @@ from flask import session as user_session
 from flask_login import login_required, login_user
 from tools.random_key import get_random_string
 from __main__ import app
-from main import Users_db, db, Item_db, bcrypt
+from main import Users_db, db, Item_db, bcrypt, Cart_db, key,ciphertext_file,MyAes
 
 @app.route("/")
 def main():
@@ -70,22 +70,22 @@ def create_account():
   except:
     return redirect(url_for("/500"))
 
-@app.route("/api/getcart")
-def get_cart():
-  try:
-    token = user_session["token"]
-    exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
-    if exists == True:
-      current_user = db.session.query(Users_db).filter_by(token=token).first()
-      user_cart = current_user.cart
-      return {"usercart":user_cart}
-    elif token == None or token == "" or token == NULL:
-      response = make_response(redirect(url_for("login")))
-      return response
-    else:
-      return redirect(url_for("internal_server_error"))
-  except:
-    return redirect(url_for("/internal_server_error"))
+# @app.route("/api/getcart")
+# def get_cart():
+#   try:
+#     token = user_session["token"]
+#     exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
+#     if exists == True:
+#       current_user = db.session.query(Users_db).filter_by(token=token).first()
+#       user_cart = current_user.cart
+#       return {"usercart":user_cart}
+#     elif token == None or token == "" or token == NULL:
+#       response = make_response(redirect(url_for("login")))
+#       return response
+#     else:
+#       return redirect(url_for("internal_server_error"))
+#   except:
+#     return redirect(url_for("/internal_server_error"))
 
 @app.route("/cart")
 @login_required
@@ -93,15 +93,54 @@ def cart():
     token = user_session["token"]
     exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
     if exists == True:
-      current_user = db.session.query(Users_db).filter_by(token=token).first()
-      user_cart = current_user.cart
-      return render_template("frontend/cart.html",user_cart=user_cart)
+      raw_username = Users_db.query.filter_by(token=token).first()
+      username = raw_username.username
+      current_user_cart = Cart_db.query.filter_by(username=username).all()
+      return render_template("frontend/cart.html",user_cart=current_user_cart)
     elif token == None or token == "" or token == NULL:
       response = make_response(redirect(url_for("login")))
       return response
     else:
       return redirect(url_for("internal_server_error"))
     
+@app.route("/cart/api/add_to_cart")
+@login_required
+def add_to_cart():
+    token = user_session["token"]
+    cart_item = request.args.get("item_id")
+    exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
+    exists2 = db.session.query(Item_db.item_id).filter_by(item_id=cart_item).first() is not None
+    if exists == True and exists2 == True:
+      raw_username = Users_db.query.filter_by(token=token).first()
+      username = raw_username.username
+      new_item = Cart_db(username,cart_item,1)
+      db.session.add(new_item)
+      db.session.commit()
+    return(redirect(url_for("cart")))
+
+@app.route("/cart/api/remove_from_cart")
+@login_required
+def remove_from_cart():
+    try:
+      token = user_session["token"]
+      item_id = request.args.get("item_id")
+      exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
+      exists2 = db.session.query(Item_db.item_id).filter_by(item_id=item_id).first() is not None
+      exists3 = db.session.query(Cart_db.item_id).filter_by(item_id=item_id).first() is not None
+    except:
+      return(redirect(url_for("cart")))
+    if exists == True and exists2 == True and exists3 == True:
+      raw_username = Users_db.query.filter_by(token=token).first()
+      username = raw_username.username
+      cart_item = Cart_db.query.filter_by(username=username,item_id=item_id).first()
+      #if (cart_item.quantity - quantity_deleted) <= 0:
+       # db.session.delete(cart_item)
+      #else:
+       # cart_item.quantity -= quantity_deleted
+      db.session.delete(cart_item)
+      db.session.commit()
+    return(redirect(url_for("cart")))
+
 @app.route("/500")
 def internal_server_error():
   return render_template("frontend/error500.html")
@@ -112,3 +151,36 @@ def product_page():
   product_info = Item_db.query.get(item_id)
   product_info_lst = [product_info.name,product_info.price]
   return render_template("frontend/productPage.html",product_info=product_info_lst)
+
+@app.route("/api/add_card",methods=["GET","POST"])
+@login_required
+def add_card():
+      # encode plaintext, then encrypt
+  try:
+    card_detail = request.form.get("card_number")
+    token = user_session["token"]
+    exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
+    if exists == True:
+      current_user = Users_db.query.filter_by(token=token).first()
+      ciphertext = MyAes.encrypt(key, card_detail.encode("utf8"))
+      current_user._Users_db__card_number = ciphertext
+      db.session.commit()
+  except:
+    return(redirect(url_for("internal_server_error")))
+    # decrypt ciphertext, then decode
+  return(redirect(url_for("main")))
+@app.route("/card_details")
+@login_required
+def card_details():
+  try:
+    token = user_session["token"]
+    exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
+    if exists == True:
+      current_user = Users_db.query.filter_by(token=token).first()
+      ciphertext = current_user._Users_db__card_number
+      if ciphertext == "":
+        return(render_template("frontend/card_details.html"))
+      decryptedtext_string = MyAes.decrypt(key, ciphertext).decode("utf8")
+  except:
+    return(redirect(url_for("internal_server_error")))
+  return(render_template("frontend/card_details.html",card_number=decryptedtext_string))
