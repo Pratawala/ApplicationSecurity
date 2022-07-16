@@ -1,0 +1,7 @@
+{% extends "frontend/base.html  " %}
+{% block content %}
+{{card_number}}
+<form action="/api/add_card" method="post">
+<input type="text" name="card_number">
+</form>
+{% endblock %}
