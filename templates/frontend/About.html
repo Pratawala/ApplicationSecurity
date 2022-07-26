@@ -1,3 +1,6 @@
+{% extends "frontend/base.html" %}
+{% block content %}
+
 <!DOCTYPE html>
     <html>
         <head>
@@ -23,14 +26,19 @@
             <h2 class="Title"><a href="index.html" style="text-decoration: none; color: #CC313D; padding-top: 1em;"><i>La Rose fanée</i></a></h2>
             <div1><button class="button" style="vertical-align:middle" style="text-decoration: none;"><a href="Products.html"><span>Products</span></a></button>
             <button class="button" style="vertical-align:middle" style="text-decoration: none;"><a href="Cart.html"><span>Cart</span></a></button>
-            <button class="button" style="vertical-align:middle" style="text-decoration: none;"><a href="About.html"><span>About</span></a></button>
+            <button class="button" style="vertical-align:middle" style="text-decoration: none;"><a href="About.html"><span>Login</span></a></button>
+            <button class="button" style="vertical-align:middle" style="text-decoration: none;"><a href="Contact.html"><span>Sign Up</span></a></button>
             <!---<button class="button" style="vertical-align:middle" style="text-decoration: none;"><a href="Contact.html"><span>Contact</span></a></button>-->
             </div1>  
           </p1>
           <p2 class="main1">
-            About
+            Login
           </p2>
-          <img class="image1" src="images\Christmas-Fragances-4.jpg">
+          <form action="/login/signin" method="POST">
+            <input type="text" name="username">
+            <input type="password" name="password">
+            <input type="submit" name="" id="">
+        </form>
           <div class="footer-clean">
             <footer>
                 <div class="container">
@@ -62,5 +70,5 @@
         </body>
     </html>
     
-    
+    {% endblock %}
     
