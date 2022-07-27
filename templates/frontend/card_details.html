@@ -1,6 +1,6 @@
 {% extends "frontend/base.html  " %}
 {% block content %}
-{{card_number}}
+{{card_details}}
 <!-- <form action="/api/add_card" method="post">
 <form action="/api/add_card" method="post">
 >>>>>>> 19c504fec78cf06bc39c15f0ce69a3a5177c4232
@@ -47,12 +47,12 @@
                 <form action="/api/add_card" method="post">
                 <div class="form-group">
                   <label for="username">Full name (on the card)</label>
-                  <input type="text" name="username" placeholder="Jason Doe" required class="form-control">
+                  <input type="text" name="full_name" placeholder="Jason Doe" required class="form-control">
                 </div>
                 <div class="form-group">
                   <label for="cardNumber" name="card_number">Card number</label>
                   <div class="input-group">
-                    <input type="text" name="cardNumber" placeholder="Your card number" class="form-control" required>
+                    <input type="text" name="card_number" placeholder="Your card number" class="form-control" required>
                     <div class="input-group-append">
                       <span class="input-group-text text-muted">
                                                   <i class="fa fa-cc-visa mx-1"></i>
@@ -67,8 +67,8 @@
                     <div class="form-group">
                       <label><span class="hidden-xs">Expiration</span></label>
                       <div class="input-group">
-                        <input type="number" placeholder="MM" name="" class="form-control" required>
-                        <input type="number" placeholder="YY" name="" class="form-control" required>
+                        <input type="number" placeholder="MM" name="expiry_date_month" class="form-control" required>
+                        <input type="number" placeholder="YY" name="expiry_date_year" class="form-control" required>
                       </div>
                     </div>
                   </div>
@@ -77,14 +77,14 @@
                       <label data-toggle="tooltip" title="Three-digits code on the back of your card">CVV
                                                   <i class="fa fa-question-circle"></i>
                                               </label>
-                      <input type="text" required class="form-control">
+                      <input type="text" name="cvv" required class="form-control">
                     </div>
                   </div>
   
   
   
                 </div>
-                <button type="button" class="subscribe btn btn-primary btn-block rounded-pill shadow-sm"> Confirm  </button>
+                <button type="submit" class="subscribe btn btn-primary btn-block rounded-pill shadow-sm"> Confirm  </button>
               </form>
             </div>
             <!-- End -->
