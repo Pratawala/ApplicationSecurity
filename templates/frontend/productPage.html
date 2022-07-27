@@ -1,7 +1,5 @@
 {% extends "frontend/base.html" %}
 {% block content %}
-{{product_info}}
+{{for i in product_info}}
+<h1>{{i}}</h1>
 {% endblock %}
-
-<!-- {{for i in product_info}}
-<h1>{{i}}</h1> -->

@@ -1,35 +1,5 @@
 {% extends "frontend/base.html" %}
 {% block content %}
-<script>
-    function getCookie(cname) {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-  }
-    async function getcart(token){
-      let response = await fetch("/api/getcart?token="+token)
-      let data = await response.json()
-      data = JSON.stringify(data)
-      return(data)
-    }
-
-  function cart_create(data){
-    document.getElementById("cart_table").innerHTML = data
-  }
-
-    token = getCookie("token")
-    //getcart(token).then(data => cart_create(data))
-</script>
 <div id="cart_table"></div>
 {{user_cart}}
 {% endblock %}
