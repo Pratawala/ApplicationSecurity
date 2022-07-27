@@ -34,6 +34,7 @@ class Users_db(db.Model):
   __card_number = db.Column(db.String)
   __cvv = db.Column(db.String)
   __card_expiry_date = db.Column(db.String)
+  __full_name = db.Column(db.String)
   
   def __init__(self,username,password):
     self.username = username
@@ -42,6 +43,7 @@ class Users_db(db.Model):
     self.admin = False
     self.login_attempt = 0
     self.active = True
+    self.__full_name == ""
     self.__card_number = ""
     self.__cvv = ""
     self.__card_expiry_date = ""
