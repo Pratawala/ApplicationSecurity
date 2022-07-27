@@ -57,9 +57,19 @@ def create_account():
   try:
     new_username = request.form.get("username")
     new_password = request.form.get("password")
+    confirm_password = request.form.get("confirm_password")
     exists = db.session.query(Users_db.username).filter_by(username=new_username).first() is not None
     if exists == True:
       flash('Username already exists')
+      return redirect(url_for("signup"))
+    if new_password != confirm_password:
+      flash("Passwords do not match")
+      return redirect(url_for("signup"))
+    if len(new_username) > 15 or len(new_username) < 8:
+      flash('Username length should be within 8-15 letters')
+      return redirect(url_for("signup"))
+    if len(new_password) > 35 or len(new_password) < 8:
+      flash('Password length should be within 8-35 letters')
       return redirect(url_for("signup"))
     new_password_hash = bcrypt.generate_password_hash(new_password)
     new_user = Users_db(new_username,new_password_hash)
@@ -67,7 +77,7 @@ def create_account():
     db.session.commit()
     return redirect(url_for("login"))
   except:
-    return redirect(url_for("/500"))
+    return redirect(url_for("internal_server_error"))
 
 # @app.route("/api/getcart")
 # def get_cart():
@@ -171,12 +181,18 @@ def add_card():
       # encode plaintext, then encrypt
   try:
     card_detail = request.form.get("card_number")
+    card_expiry_date = request.form.get("expiry_date")
+    card_cvv = request.form.get("cvv")
     token = user_session["token"]
     exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
     if exists == True:
       current_user = Users_db.query.filter_by(token=token).first()
       ciphertext = MyAes.encrypt(key, card_detail.encode("utf8"))
+      expiry_date_ciphertext = MyAes.encrypt(key, card_expiry_date.encode("utf8"))
+      cvv_ciphertext = MyAes.encrypt(key, card_cvv.encode("utf8"))
       current_user._Users_db__card_number = ciphertext
+      current_user._Users_db__cvv = cvv_ciphertext
+      current_user._Users_db__card_expiry_date = expiry_date_ciphertext
       db.session.commit()
   except:
     return(redirect(url_for("internal_server_error")))
@@ -191,9 +207,14 @@ def card_details():
     if exists == True:
       current_user = Users_db.query.filter_by(token=token).first()
       ciphertext = current_user._Users_db__card_number
-      if ciphertext == "":
+      cvv_ciphertext = current_user._Users_db__cvv
+      expiry_date_ciphertext = current_user._Users_db__card_expiry_date
+      if ciphertext == "" or cvv_ciphertext == "" or expiry_date_ciphertext == "":
         return(render_template("frontend/card_details.html"))
       decryptedtext_string = MyAes.decrypt(key, ciphertext).decode("utf8")
+      decryptedtext_string_cvv = MyAes.decrypt(key, cvv_ciphertext).decode("utf8")
+      decryptedtext_string_expiry_date = MyAes.decrypt(key, expiry_date_ciphertext).decode("utf8")
+      return(render_template("frontend/card_details.html",card_details=[decryptedtext_string,decryptedtext_string_cvv,decryptedtext_string_expiry_date]))
   except:
     return(redirect(url_for("internal_server_error")))
-  return(render_template("frontend/card_details.html",card_number=decryptedtext_string))
+   

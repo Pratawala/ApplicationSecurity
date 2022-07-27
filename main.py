@@ -1,4 +1,3 @@
-import Crypto
 from flask import Flask
 from flask import request
 from datetime import timedelta
@@ -23,7 +22,6 @@ app.config["SESSION_COOKIE_SECURE"] = True
 db = SQLAlchemy(app)
 login_manager.init_app(app)
 bcrypt = Bcrypt(app)
-logging.basicConfig(filename='record.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 class Users_db(db.Model):
   
@@ -35,6 +33,7 @@ class Users_db(db.Model):
   active = db.Column(db.Boolean)
   __card_number = db.Column(db.String)
   __cvv = db.Column(db.String)
+  __card_expiry_date = db.Column(db.String)
   
   def __init__(self,username,password):
     self.username = username
@@ -45,6 +44,7 @@ class Users_db(db.Model):
     self.active = True
     self.__card_number = ""
     self.__cvv = ""
+    self.__card_expiry_date = ""
   
   def is_active(self):
     return(self.active)
@@ -64,6 +64,9 @@ class Users_db(db.Model):
   def get_cvv(self):
     return(self.__cvv)
 
+  def get_card_expiry_date(self):
+    return(self.__card_expiry_date)
+
   def set_card_number(self,card_number):
     self.__card_number = card_number
     return
@@ -71,6 +74,10 @@ class Users_db(db.Model):
   def set_cvv(self,cvv):
     self.__cvv = cvv
     return
+
+  def set_card_expiry_date(self,expiry_date):
+    self.__card_expiry_date = expiry_date
+    return 
 
 class Item_db(db.Model):
   __bind_key__ = 'product'
@@ -115,7 +122,7 @@ def is_safe_url(target):
 
 key = MyAes.get_fixed_key()
 ciphertext_file = "ciphertext.txt"
-
+    
 import frontend
 import admin_main
 
