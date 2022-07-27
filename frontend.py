@@ -10,8 +10,7 @@ from main import Users_db, db, Item_db, bcrypt, Cart_db, key,ciphertext_file,MyA
 
 @app.route("/")
 def main():
-    product_dict = Item_db.query.all()
-    return render_template('/frontend/homepage.html',products_lst=product_dict)
+  return render_template('/frontend/homepage.html')
 
 @app.route("/login")
 def login():
@@ -62,12 +61,6 @@ def create_account():
     if exists == True:
       flash('Username already exists')
       return redirect(url_for("signup"))
-    if len(new_username) > 15 or len(new_username) < 8:
-      flash('Username length should be within 8-15 letters')
-      return redirect(url_for("signup"))
-    if len(new_password) > 35 or len(new_password) < 8:
-      flash('Password length should be within 8-35 letters')
-      return redirect(url_for("signup"))
     new_password_hash = bcrypt.generate_password_hash(new_password)
     new_user = Users_db(new_username,new_password_hash)
     db.session.add(new_user)
@@ -101,7 +94,11 @@ def cart():
     if exists == True:
       raw_username = Users_db.query.filter_by(token=token).first()
       username = raw_username.username
-      current_user_cart = Cart_db.query.filter_by(username=username).all()
+      current_user_cart_obj = Cart_db.query.filter_by(username=username).all()
+      current_user_cart = []
+      for i in current_user_cart_obj:
+        item = Item_db.query.get({i.item_id})
+        current_user_cart.append([item.name,item.price,i.quantity,i.item_id])
       return render_template("frontend/cart.html",user_cart=current_user_cart)
     elif token == None or token == "" or token == NULL:
       response = make_response(redirect(url_for("login")))
@@ -112,17 +109,22 @@ def cart():
 @app.route("/cart/api/add_to_cart")
 @login_required
 def add_to_cart():
+  try:
     token = user_session["token"]
     cart_item = request.args.get("item_id")
+    quantity = request.args.get("quantity")
+    quantity = int(quantity)
     exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
     exists2 = db.session.query(Item_db.item_id).filter_by(item_id=cart_item).first() is not None
     if exists == True and exists2 == True:
       raw_username = Users_db.query.filter_by(token=token).first()
       username = raw_username.username
-      new_item = Cart_db(username,cart_item,1)
+      new_item = Cart_db(username,cart_item,quantity)
       db.session.add(new_item)
       db.session.commit()
     return(redirect(url_for("cart")))
+  except:
+    return redirect(url_for("internal_server_error"))
 
 @app.route("/cart/api/remove_from_cart")
 @login_required
@@ -130,20 +132,21 @@ def remove_from_cart():
     try:
       token = user_session["token"]
       item_id = request.args.get("item_id")
+      quantity_deleted = request.args.get("quantity")
+      quantity_deleted = int(quantity_deleted)
       exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
       exists2 = db.session.query(Item_db.item_id).filter_by(item_id=item_id).first() is not None
       exists3 = db.session.query(Cart_db.item_id).filter_by(item_id=item_id).first() is not None
     except:
-      return(redirect(url_for("cart")))
+      return(redirect(url_for("internal_server_error")))
     if exists == True and exists2 == True and exists3 == True:
       raw_username = Users_db.query.filter_by(token=token).first()
       username = raw_username.username
       cart_item = Cart_db.query.filter_by(username=username,item_id=item_id).first()
-      #if (cart_item.quantity - quantity_deleted) <= 0:
-       # db.session.delete(cart_item)
-      #else:
-       # cart_item.quantity -= quantity_deleted
-      db.session.delete(cart_item)
+      if (cart_item.quantity - quantity_deleted) <= 0:
+        db.session.delete(cart_item)
+      else:
+        cart_item.quantity -= quantity_deleted
       db.session.commit()
     return(redirect(url_for("cart")))
 
@@ -153,10 +156,14 @@ def internal_server_error():
 
 @app.route("/productPage")
 def product_page():
-  item_id = request.args.get("item_id")
-  product_info = Item_db.query.get(item_id)
-  product_info_lst = [product_info.name,product_info.price]
-  return render_template("frontend/productPage.html",product_info=product_info_lst)
+  try:
+    product_info_lst = []
+    product_lst = Item_db.query.all()
+    for i in product_lst:
+      product_info_lst.append([i.name,i.price,i.item_id])
+    return render_template("frontend/productPage.html",product_info=product_info_lst)
+  except:
+    return redirect(url_for("internal_server_error"))
 
 @app.route("/api/add_card",methods=["GET","POST"])
 @login_required
