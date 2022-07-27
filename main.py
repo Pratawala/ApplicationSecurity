@@ -135,9 +135,9 @@ if __name__ == "__main__":
       db.create_all()
       app.run(debug=True,ssl_context=('localhost+2.pem', 'localhost+2-key.pem'))
 
-cart = Cart_db("shin")
+cart = Cart_db("shin","","0")
 serialized = pickle.dumps(cart)
-filename = cart.file
+filename = "cart.file"
 
 with open(filename, "wb") as file_object:
   file_object.write(serialized)
