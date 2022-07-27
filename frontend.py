@@ -62,6 +62,12 @@ def create_account():
     if exists == True:
       flash('Username already exists')
       return redirect(url_for("signup"))
+    if len(new_username) > 15 or len(new_username) < 8:
+      flash('Username length should be within 8-15 letters')
+      return redirect(url_for("signup"))
+    if len(new_password) > 35 or len(new_password) < 8:
+      flash('Password length should be within 8-35 letters')
+      return redirect(url_for("signup"))
     new_password_hash = bcrypt.generate_password_hash(new_password)
     new_user = Users_db(new_username,new_password_hash)
     db.session.add(new_user)
