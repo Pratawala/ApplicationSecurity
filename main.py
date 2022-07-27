@@ -144,3 +144,4 @@ with open(filename, "wb") as file_object:
 with open(filename, "rb"):
   raw_data = file_object.read
 
+deserialized_data = pickle.loads(raw_data)
