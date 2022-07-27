@@ -2470,3 +2470,29 @@
 2022-07-27 14:46:23,222 INFO werkzeug Thread-33 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 14:46:23] "GET /static/images/D2%20vert.jpg HTTP/1.1" 200 -
 2022-07-27 14:46:23,225 INFO werkzeug Thread-34 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 14:46:23] "GET /static/images/D1_vert.jpg HTTP/1.1" 200 -
 2022-07-27 14:46:23,349 INFO werkzeug Thread-35 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 14:46:23] "GET /static/Quicksand-Bold.ttf HTTP/1.1" 200 -
+2022-07-27 22:55:00,199 INFO werkzeug MainThread :  * Running on https://127.0.0.1:5000 (Press CTRL+C to quit)
+2022-07-27 22:55:00,200 INFO werkzeug MainThread :  * Restarting with stat
+2022-07-27 22:55:00,854 WARNING werkzeug MainThread :  * Debugger is active!
+2022-07-27 22:55:00,858 INFO werkzeug MainThread :  * Debugger PIN: 144-323-304
+2022-07-27 22:55:06,935 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:06] "GET / HTTP/1.1" 200 -
+2022-07-27 22:55:06,982 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:06] "[33mGET /Main.css HTTP/1.1[0m" 404 -
+2022-07-27 22:55:07,105 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:07] "GET /static/Main.css HTTP/1.1" 200 -
+2022-07-27 22:55:07,155 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:07] "GET /static/images/BANNER-DIOR21.jpg HTTP/1.1" 200 -
+2022-07-27 22:55:07,185 INFO werkzeug Thread-8 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:07] "GET /static/Quicksand-Bold.ttf HTTP/1.1" 200 -
+2022-07-27 22:55:07,195 INFO werkzeug Thread-6 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:07] "GET /static/images/D2%20vert.jpg HTTP/1.1" 200 -
+2022-07-27 22:55:07,228 INFO werkzeug Thread-7 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:07] "GET /static/images/D1_vert.jpg HTTP/1.1" 200 -
+2022-07-27 22:55:07,272 INFO werkzeug Thread-9 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:07] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2022-07-27 22:55:11,283 INFO werkzeug Thread-10 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:11] "GET /login HTTP/1.1" 200 -
+2022-07-27 22:55:11,316 INFO werkzeug Thread-11 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:11] "GET /static/login.css HTTP/1.1" 200 -
+2022-07-27 22:55:14,423 INFO werkzeug Thread-12 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:14] "[32mPOST /login/signin HTTP/1.1[0m" 302 -
+2022-07-27 22:55:14,434 INFO werkzeug Thread-13 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:14] "GET / HTTP/1.1" 200 -
+2022-07-27 22:55:14,473 INFO werkzeug Thread-14 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:14] "[33mGET /Main.css HTTP/1.1[0m" 404 -
+2022-07-27 22:55:14,478 INFO werkzeug Thread-15 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:14] "GET /static/Main.css HTTP/1.1" 200 -
+2022-07-27 22:55:14,482 INFO werkzeug Thread-16 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:14] "[36mGET /static/images/BANNER-DIOR21.jpg HTTP/1.1[0m" 304 -
+2022-07-27 22:55:14,484 INFO werkzeug Thread-17 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:14] "[36mGET /static/images/D2%20vert.jpg HTTP/1.1[0m" 304 -
+2022-07-27 22:55:14,486 INFO werkzeug Thread-18 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:14] "[36mGET /static/images/D1_vert.jpg HTTP/1.1[0m" 304 -
+2022-07-27 22:55:14,514 INFO werkzeug Thread-19 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:14] "[36mGET /static/Quicksand-Bold.ttf HTTP/1.1[0m" 304 -
+2022-07-27 22:55:18,395 INFO werkzeug Thread-20 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:18] "GET /card_details HTTP/1.1" 200 -
+2022-07-27 22:55:18,425 INFO werkzeug Thread-21 (process_request_thread) : 127.0.0.1 - - [27/Jul/2022 22:55:18] "[36mGET /static/Main.css HTTP/1.1[0m" 304 -
+2022-07-27 22:59:34,316 INFO werkzeug MainThread :  * Detected change in 'c:\\Users\\shint\\Documents\\GitHub\\ApplicationSecurity\\main.py', reloading
+2022-07-27 22:59:34,387 INFO werkzeug MainThread :  * Restarting with stat
