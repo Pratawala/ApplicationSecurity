@@ -3,6 +3,7 @@ from flask import redirect, render_template
 from flask import Flask, make_response, url_for
 from flask import request, request, flash
 from flask import session as user_session
+from flask import jsonify
 from flask_login import login_required, login_user
 from tools.random_key import get_random_string
 from __main__ import app
@@ -10,6 +11,7 @@ from main import Users_db, db, Item_db, bcrypt, Cart_db, key,ciphertext_file,MyA
 import pickle
 import json
 from json import JSONEncoder
+
 
 @app.route("/")
 def main():
@@ -230,4 +232,13 @@ def card_details():
   except:
     return(redirect(url_for("internal_server_error")))
    
-
+@app.route("/is_xml",methods=['GET', 'POST'])
+def is_xml():
+  if request.method == "POST":
+        passwords = request.get_json()
+        print(passwords)
+        if passwords["password"] == passwords["confirm_password"]:
+          same_password = True
+        else:
+          same_password = False
+        return jsonify({"same_password":same_password})
