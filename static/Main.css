@@ -14,6 +14,22 @@
   transform: translate(-50%, -50%);
   text-decoration: none;
 }
+
+.user {
+  padding-top: 2%;
+  padding-left: 6.5%;
+  font-size: 38px;
+  font-family: Quicksand-Bold;
+  text-align: center;
+  font-weight: 100;
+  display: flex;
+  position: absolute;
+  text-decoration: none;
+  color: #CC313D;
+}
+
+
+
 .main2 {
   padding-top: 60px;
   font-style: italic;
@@ -113,14 +129,6 @@ transform: scale(1.1);
 transform: scale(1.1);
 }
 
-.gristext {
-    font size: 42px;
-    font-family: Quicksand-Bold;
-    width: 30%;
-    padding-left: 20%;
-    margin-top: 20%;
-    
-}
 
 .footer-clean {
   display: block;
