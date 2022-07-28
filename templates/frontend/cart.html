@@ -1,6 +1,6 @@
 {% extends "frontend/base.html" %}
-Render_template("frontend/cart.html",data=deserialized_data)
 {% block content %}
+{{deserialized_data}}
 <table class="table" style="margin-top: 5%;width: 88%;margin-left: auto;margin-right: auto;">
   <tr><th>Item Name</th><th>Price</th><th>quanity</th><th>item_id</th></tr>
   {%for i in user_cart%}

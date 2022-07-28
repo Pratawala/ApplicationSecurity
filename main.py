@@ -9,9 +9,7 @@ from urllib.parse import urlparse, urljoin
 from flask_bcrypt import Bcrypt
 import logging
 import MyAes
-import pickle
-import json
-from json import JSONEncoder
+
 
 
 login_manager = LoginManager()
@@ -134,14 +132,3 @@ import admin_main
 if __name__ == "__main__":
       db.create_all()
       app.run(debug=True,ssl_context=('localhost+2.pem', 'localhost+2-key.pem'))
-""" 
-cart = Cart_db("shin","","0")
-serialized = pickle.dumps(cart)
-filename = "cart.file"
-
-with open(filename, "wb") as file_object:
-  file_object.write(serialized)
-with open(filename, "rb"):
-  raw_data = file_object.read
-
-deserialized_data = pickle.loads(raw_data) """

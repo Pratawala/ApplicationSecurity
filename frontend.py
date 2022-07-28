@@ -7,6 +7,9 @@ from flask_login import login_required, login_user
 from tools.random_key import get_random_string
 from __main__ import app
 from main import Users_db, db, Item_db, bcrypt, Cart_db, key,ciphertext_file,MyAes
+import pickle
+import json
+from json import JSONEncoder
 
 @app.route("/")
 def main():
@@ -99,6 +102,14 @@ def create_account():
 @app.route("/cart")
 @login_required
 def cart():
+    cart = Cart_db("shinshin","","")
+    serialized = pickle.dumps(cart)
+    filename = "cart.file"
+    with open(filename, "wb") as file_object:
+      file_object.write(serialized)
+    with open(filename, "rb") as file_object:
+      raw_data = file_object.read()
+    deserialized_data = pickle.loads(raw_data)
     token = user_session["token"]
     exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
     if exists == True:
@@ -109,12 +120,13 @@ def cart():
       for i in current_user_cart_obj:
         item = Item_db.query.get({i.item_id})
         current_user_cart.append([item.name,item.price,i.quantity,i.item_id])
-      return render_template("frontend/cart.html",user_cart=current_user_cart)
+      return render_template("frontend/cart.html",user_cart=current_user_cart,deserialized_data=deserialized_data.username)
     elif token == None or token == "" or token == NULL:
       response = make_response(redirect(url_for("login")))
       return response
     else:
       return redirect(url_for("internal_server_error"))
+    
     
 @app.route("/cart/api/add_to_cart")
 @login_required
@@ -218,3 +230,4 @@ def card_details():
   except:
     return(redirect(url_for("internal_server_error")))
    
+
