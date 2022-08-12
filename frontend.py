@@ -48,7 +48,10 @@ def signin():
       db.session.commit()
       user_session["token"] = current_user.token
       user_session["admin"] = current_user.admin
-      response = redirect(url_for("main"))
+      if current_user.admin == True:
+        response = redirect(url_for("main_admin"))
+      else:
+        response = redirect(url_for("main"))
       ##response.set_cookie('token', token, max_age=60*60*24) #create cookie, set cookie to expire after 24h(60s x 60m x 24h)
       return response
     else:
