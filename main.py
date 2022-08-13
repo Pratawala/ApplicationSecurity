@@ -14,12 +14,7 @@ import MyAes
 
 login_manager = LoginManager()
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.sqlite3'
-app.config['SQLALCHEMY_BINDS'] = {'product' : 'sqlite:///product.sqlite3'
-, 'cart':'sqlite:///cart.sqlite3'}
-app.config['SECRET_KEY'] = "9z$C&F)J@NcRfUjXn2r5u8x/A%D*G-Ka"
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_COOKIE_SECURE"] = True
+app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 login_manager.init_app(app)
 bcrypt = Bcrypt(app)
