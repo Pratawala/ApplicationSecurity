@@ -106,3 +106,22 @@ def account_manage():
     return(render_template("admin/account_manage.html",account_dict=account_dict))
   else:
     return redirect(url_for("main"))
+
+@app.route("/admin/api/delete_account",methods=["DELETE","POST"])
+@login_required
+def delete_account():
+  try:
+    is_admin = user_session["admin"]
+  except:
+    return redirect(url_for("main"))
+  if is_admin == None:
+    return redirect(url_for("login"))
+  elif is_admin == True:
+    try:
+      account = request.form.get("username")
+      Users_db.query.filter_by(username=account).delete()
+      db.session.commit()
+    except:
+      return(redirect(url_for("account_manage")))
+    return(redirect(url_for("account_manage")))
+    

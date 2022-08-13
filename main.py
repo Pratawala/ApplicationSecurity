@@ -28,7 +28,6 @@ class Users_db(db.Model):
   login_attempt = db.Column(db.Integer)
   active = db.Column(db.Boolean)
   __card_number = db.Column(db.String)
-  __cvv = db.Column(db.String)
   __card_expiry_date = db.Column(db.String)
   __full_name = db.Column(db.String)
   
@@ -41,7 +40,6 @@ class Users_db(db.Model):
     self.active = True
     self.__full_name == ""
     self.__card_number = ""
-    self.__cvv = ""
     self.__card_expiry_date = ""
   
   def is_active(self):
@@ -59,18 +57,11 @@ class Users_db(db.Model):
   def get_card_number(self):
     return(self.__card_number)
 
-  def get_cvv(self):
-    return(self.__cvv)
-
   def get_card_expiry_date(self):
     return(self.__card_expiry_date)
 
   def set_card_number(self,card_number):
     self.__card_number = card_number
-    return
-
-  def set_cvv(self,cvv):
-    self.__cvv = cvv
     return
 
   def set_card_expiry_date(self,expiry_date):
