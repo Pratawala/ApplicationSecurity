@@ -1,12 +1,14 @@
-#__mydoc__ = ""
-
+from os import environ, path
+from dotenv import load_dotenv
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
 
 
 def get_fixed_key():
-    key = b"McQfTjWnZr4u7x!A%D*G-KaNdRgUkXp2"
+    basedir = path.abspath(path.dirname(__file__))
+    load_dotenv(path.join(basedir, '.env'))
+    key = (environ.get("AES_KEY")).encode("utf8")
     return key
     #use fixed AES key, 256 bits
     #return b"..."

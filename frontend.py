@@ -198,12 +198,13 @@ def add_card():
       # encode plaintext, then encrypt
   try:
     card_detail = request.form.get("card_number")
-    card_expiry_date = request.form.get("expiry_date")
+    card_expiry_date = request.form.get("expiry_date_month") + "/" + request.form.get("expiry_date_year")
     card_cvv = request.form.get("cvv")
     token = user_session["token"]
     exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
     if exists == True:
       current_user = Users_db.query.filter_by(token=token).first()
+      key = MyAes.get_fixed_key()
       ciphertext = MyAes.encrypt(key, card_detail.encode("utf8"))
       expiry_date_ciphertext = MyAes.encrypt(key, card_expiry_date.encode("utf8"))
       cvv_ciphertext = MyAes.encrypt(key, card_cvv.encode("utf8"))
