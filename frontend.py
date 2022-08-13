@@ -7,7 +7,8 @@ from flask import jsonify
 from flask_login import login_required, login_user
 from tools.random_key import get_random_string
 from __main__ import app
-from main import Users_db, db, Item_db, bcrypt, Cart_db, key,ciphertext_file,MyAes
+from main import Users_db, db, Item_db, bcrypt, Cart_db, key,ciphertext_file,MyAes,mail
+from flask_mail import Message
 import pickle
 import json
 from json import JSONEncoder
@@ -65,6 +66,7 @@ def create_account():
   try:
     new_username = request.form.get("username")
     new_password = request.form.get("password")
+    new_email = request.form.get("email")
     confirm_password = request.form.get("confirm_password")
     exists = db.session.query(Users_db.username).filter_by(username=new_username).first() is not None
     if exists == True:
@@ -80,7 +82,7 @@ def create_account():
       flash('Password length should be within 8-35 letters')
       return redirect(url_for("signup"))
     new_password_hash = bcrypt.generate_password_hash(new_password)
-    new_user = Users_db(new_username,new_password_hash)
+    new_user = Users_db(new_username,new_password_hash,new_email)
     db.session.add(new_user)
     db.session.commit()
     return redirect(url_for("login"))
