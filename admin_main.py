@@ -3,7 +3,8 @@ from flask import Flask, render_template, flash
 from flask import redirect, url_for, request
 from flask_login import login_required
 from tools.random_key import get_random_string
-from main import Item_db, db, Users_db
+from main import Item_db, db, Users_db,mail,bcrypt
+from flask_mail import Message
 from flask import session as user_session
 
 @app.route("/make_admin")
@@ -120,6 +121,48 @@ def delete_account():
     try:
       account = request.form.get("username")
       Users_db.query.filter_by(username=account).delete()
+      db.session.commit()
+    except:
+      return(redirect(url_for("account_manage")))
+    return(redirect(url_for("account_manage")))
+
+@app.route("/admin/api/modify_account",methods=["POST"])
+@login_required
+def modify_account():
+  try:
+    is_admin = user_session["admin"]
+  except:
+    return redirect(url_for("main"))
+  if is_admin == None:
+    return redirect(url_for("login"))
+  elif is_admin == True:
+    try:
+      username = request.form.get("username")
+      login_attempt = request.form.get("login_attempt")
+      role = request.form.get("role")
+      reset_password = request.form.get("reset_password")
+      change_user = Users_db.query.get(username)
+      if role != "True" and role != "False":
+        flash("Please input a valid role")
+        return(redirect(url_for("account_manage")))
+      if int(login_attempt) < 0:
+        flash("Please input a valid login_attempt")
+        return(redirect(url_for("account_manage")))
+      if reset_password != "True" and reset_password != "False":
+        flash("Please input a valid reset password input")
+        return(redirect(url_for("account_manage")))
+      change_user.login_attempt = int(login_attempt)
+      change_user.role = bool(role)
+      email = change_user.email
+      if email == "":
+        flash("Please input an email for this account")
+        return(redirect(url_for("account_manage")))
+      if reset_password == "True":
+        temp = get_random_string(12)
+        change_user.password = bcrypt.generate_password_hash(temp)
+        msg = Message('Reset password for La Rose fanée', sender =   'smtp.gmail.com', recipients = [email])
+        msg.body = f"Hey {username}, your new password is {temp}"
+        mail.send(msg)
       db.session.commit()
     except:
       return(redirect(url_for("account_manage")))
