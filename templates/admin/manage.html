@@ -1,4 +1,28 @@
 {% extends "admin/base.html" %}
 {% block content %}
-<h1>Product Modification</h1>
+<h1>Products</h1>
+<!-- <body>
+<table>
+<tr><th>item id</th><th>name</th><th>price</th></tr>
+{% for item in product_lst %}
+  <tr>
+  <td>{{item["item_id"]}}</td>
+  <td>{{item["name"]}}</td>
+  <td>${{item["price"]}}</td>
+  </tr>
+{% endfor %}
+Create Item
+</table>
+<form action="/admin/api/add_item" method="get">
+<input type="text" name="name">
+<input type="number" name="price">
+<input type="submit">
+</form>
+Delete Item
+<form action="/admin/api/delete_item" method="get">
+<input type="text" name="item_id">
+<input type="submit">
+</form>
+</body>
+</html> -->
 {% endblock %}
