@@ -9,6 +9,7 @@ from urllib.parse import urlparse, urljoin
 from flask_bcrypt import Bcrypt
 import logging
 import MyAes
+from flask_mail import Mail
 
 
 
@@ -16,6 +17,7 @@ login_manager = LoginManager()
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
+mail = Mail(app)
 login_manager.init_app(app)
 bcrypt = Bcrypt(app)
 
@@ -30,8 +32,9 @@ class Users_db(db.Model):
   __card_number = db.Column(db.String)
   __card_expiry_date = db.Column(db.String)
   __full_name = db.Column(db.String)
+  email = db.Column(db.String)
   
-  def __init__(self,username,password):
+  def __init__(self,username,password,email):
     self.username = username
     self.password = password
     self.token = get_random_string(8)
@@ -41,7 +44,8 @@ class Users_db(db.Model):
     self.__full_name == ""
     self.__card_number = ""
     self.__card_expiry_date = ""
-  
+    self.email = email
+
   def is_active(self):
     return(self.active)
 
