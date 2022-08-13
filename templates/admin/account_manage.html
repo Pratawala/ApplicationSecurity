@@ -1,3 +1,5 @@
+{% extends "admin/homepage.html" %}
+{% block content %}
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
@@ -16,3 +18,4 @@
 <input type="submit" name="" id="">
 </form>
 <form action="/admin/api/delete_account" method="post"><input type="text" name="username"></form>
+{% endblock %}
