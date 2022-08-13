@@ -1,33 +1,27 @@
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-<table>
-<tr><th>item id</th><th>name</th><th>price</th></tr>
-{% for item in product_lst %}
-  <tr>
-  <td>{{item["item_id"]}}</td>
-  <td>{{item["name"]}}</td>
-  <td>${{item["price"]}}</td>
-  </tr>
-{% endfor %}
-create item form
-</table>
-<form action="/admin/api/add_item" method="get">
-<input type="text" name="name">
-<input type="number" name="price">
-<input type="submit">
-</form>
-delete item form
-<form action="/admin/api/delete_item" method="get">
-<input type="text" name="item_id">
-<input type="submit">
-</form>
-</body>
-</html>
+{% extends "admin/homepage.html" %}
+{% block content %}
+  <body>
+  <table>
+  <tr><th>item id</th><th>name</th><th>price</th></tr>
+  {% for item in product_lst %}
+    <tr>
+    <td>{{item["item_id"]}}</td>
+    <td>{{item["name"]}}</td>
+    <td>${{item["price"]}}</td>
+    </tr>
+  {% endfor %}
+  Create Item
+  </table>
+  <form action="/admin/api/add_item" method="get">
+  <input type="text" name="name">
+  <input type="number" name="price">
+  <input type="submit">
+  </form>
+  Delete Item
+  <form action="/admin/api/delete_item" method="get">
+  <input type="text" name="item_id">
+  <input type="submit">
+  </form>
+  </body>
+  </html>
+  {% endblock %}
