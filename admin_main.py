@@ -142,17 +142,21 @@ def modify_account():
       role = request.form.get("role")
       reset_password = request.form.get("reset_password")
       change_user = Users_db.query.get(username)
-      if role != "True" and role != "False":
+      if role != "admin" and role != "user":
         flash("Please input a valid role")
         return(redirect(url_for("account_manage")))
       if int(login_attempt) < 0:
         flash("Please input a valid login_attempt")
         return(redirect(url_for("account_manage")))
-      if reset_password != "True" and reset_password != "False":
+      if reset_password != "Yes" and reset_password != "No":
         flash("Please input a valid reset password input")
         return(redirect(url_for("account_manage")))
       change_user.login_attempt = int(login_attempt)
-      change_user.role = bool(role)
+      if role == "admin":
+        role = True
+      else:
+        role = False
+      change_user.admin = role
       email = change_user.email
       if email == "":
         flash("Please input an email for this account")
