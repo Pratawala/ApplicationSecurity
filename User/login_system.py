@@ -5,8 +5,8 @@ from flask import session as user_session
 from flask_login import  login_user,logout_user, login_required
 from tools.random_key import get_random_string
 from __main__ import app
-from main import Users_db, db,bcrypt
-from flask_mail import mail, Message
+from main import Users_db, db,bcrypt,mail
+from flask_mail import Message
 import re
 
 def flash_msg(msg):
