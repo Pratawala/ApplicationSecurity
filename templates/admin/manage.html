@@ -1,28 +1,40 @@
 {% extends "admin/base.html" %}
 {% block content %}
 <h1>Products</h1>
-<!-- <body>
-<table>
-<tr><th>item id</th><th>name</th><th>price</th></tr>
+<body>
+<table id="keywords" cellspacing="0" cellpadding="10">
+<tr><th>Item ID</th><th>Name</th><th>Price</th></tr>
 {% for item in product_lst %}
-  <tr>
-  <td>{{item["item_id"]}}</td>
-  <td>{{item["name"]}}</td>
-  <td>${{item["price"]}}</td>
-  </tr>
-{% endfor %}
-Create Item
+<table id="keywords" cellspacing="0" cellpadding="0">
+  <tbody>
+    <tr>
+      <td>{{item["item_id"]}}</td>
+      <td>{{item["name"]}}</td>
+      <td>${{item["price"]}}</td>
+      </tr>
+  </tbody>
 </table>
-<form action="/admin/api/add_item" method="get">
-<input type="text" name="name">
-<input type="number" name="price">
-<input type="submit">
-</form>
+{% endfor %}
+<div class="login-box">
+  <h2>Create Item</h2>
+  <form action="/admin/api/add_item" method="get">
+    <div class="user-box">
+      <input type="text" name="name" required="">
+      <label>Item Name</label>
+    </div>
+    <div class="user-box">
+      <input type="number" name="price" required="">
+      <label>Price</label>
+    </div>
+    <input type="submit">
+  </form>
+</div>
+
 Delete Item
 <form action="/admin/api/delete_item" method="get">
 <input type="text" name="item_id">
 <input type="submit">
 </form>
 </body>
-</html> -->
+</html>
 {% endblock %}
