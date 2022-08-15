@@ -43,7 +43,7 @@ def signin():
         if current_user.login_attempt > 3 or current_user.active == False: #checks if user account is active or has login too many times
             current_user.active = False
             db.session.commit()
-            flash_msg("Login too many times,account has been deactivated")
+            flash("Login too many times,account has been deactivated")
             return redirect(url_for("login"))
 
         if bcrypt.check_password_hash(current_user.password,password): #Compares password hashes of the password inputed and the password stored
@@ -58,6 +58,7 @@ def signin():
             else:
               return(redirect(url_for("main")))
         else: #invalid password
+         
           current_user.login_attempt += 1 #add login attempt
           db.session.commit()
           flash_msg("Invalid username or password was entered")
@@ -66,10 +67,23 @@ def signin():
     return(redirect(url_for("internal_server_error")))
   flash_msg("Invalid username or password was entered")
   return(redirect(url_for("login")))
+
+
 @app.route("/signup/create",methods=["GET","POST"])
+
+
 def create_account():
+  regex_for_sanitaisation= ("^[A-Za-z0-9]*$")
+  sanitise_user = re.compile(regex_for_sanitaisation)
+  
   try:
-    new_username = request.form.get("username") #retrieve username,password,confirm_password,email from html form
+    new_username = request.form.get("username").strip() #retrieve username,password,confirm_password,email from html form
+    if (re.search(sanitise_user, new_username)):
+      pass
+    else:
+      flash_msg('Only valid characters allowed for username! (A-Z),(a-z),(0-9) Hint: No spaces allowed!')
+      return redirect(url_for("signup"))
+    
     new_password = request.form.get("password")
     new_email = request.form.get("email")
     confirm_password = request.form.get("confirm_password")
@@ -83,17 +97,17 @@ def create_account():
     if new_password != confirm_password:
       flash_msg("Passwords do not match") #reject if password is not the same as the confirm password field
       return redirect(url_for("signup"))
-    if len(new_username) > 15 or len(new_username) < 8:
-      flash_msg('Username length should be within 8-15 letters')
+    if len(new_username) > 25 or len(new_username) < 8:
+      flash_msg('Username length should be within 8-25 letters')
       return redirect(url_for("signup"))
     
-    regex_password = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+    regex_password = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$"
     if re.search(regex_password,new_password) == None: #checks if password meets minimum requirements
       flash_msg('''At least one upper case English letter,
 At least one lower case English letter,
 At least one digit,
 At least one special character,
-Minimum eight characters''')
+Minimum 12 characters''')
       return redirect(url_for("signup"))
 
     regex_email = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'

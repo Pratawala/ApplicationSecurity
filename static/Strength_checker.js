@@ -8,6 +8,7 @@
     let confirm_passowrd = document.getElementById('confirm_password')
     let strengthBadge = document.getElementById('StrengthDisp')
 
+  
     // The strong and weak password Regex pattern checker
 
     let strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{16,})')
@@ -27,13 +28,17 @@
             strengthBadge.style.backgroundColor = "green"
             strengthBadge.textContent = 'Strong Password, good job!'
         } else if(mediumPassword.test(PasswordParameter)){
-            strengthBadge.style.backgroundColor = 'yellow'
+            strengthBadge.style.backgroundColor = 'blue'
             strengthBadge.textContent = 'Password is ok, can be better'
         } else{
             strengthBadge.style.backgroundColor = 'red'
             strengthBadge.textContent = 'Password is too Weak!'
         }
+        
+
+
     }
+    
 
     // Adding an input event listener when a user types to the  password input 
     console.log(password)
