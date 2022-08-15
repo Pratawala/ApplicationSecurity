@@ -66,30 +66,39 @@ def signin():
     return(redirect(url_for("internal_server_error")))
   flash_msg("Invalid username or password was entered")
   return(redirect(url_for("login")))
+
+
 @app.route("/signup/create",methods=["GET","POST"])
 def create_account():
+  
   try:
     new_username = request.form.get("username") #retrieve username,password,confirm_password,email from html form
     new_password = request.form.get("password")
     new_email = request.form.get("email")
     confirm_password = request.form.get("confirm_password")
     exists = db.session.query(Users_db.username).filter_by(username=new_username).first() is not None #checks if username exists
+  
   except:
     return redirect(url_for("internal_server_error")) #if error 
+ 
   try:
     if exists == True:
       flash_msg('Username already exists') #reject username that already exists
       return redirect(url_for("signup"))
+   
     if new_password != confirm_password:
       flash_msg("Passwords do not match") #reject if password is not the same as the confirm password field
       return redirect(url_for("signup"))
+   
     if len(new_username) > 24 or len(new_username) < 8:
       flash_msg('Username length should be within 8-24 letters')
       return redirect(url_for("signup"))
+   
     if len(new_password) >63:
       flash_msg('Password is too long')
       return redirect(url_for("signup"))
     regex_password = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$"
+   
     if re.search(regex_password,new_password) == None: #checks if password meets minimum requirements
       flash_msg('''At least one upper case English letter,
 At least one lower case English letter,
@@ -108,8 +117,10 @@ Minimum 12 characters''')
     db.session.add(new_user)
     db.session.commit()
     return redirect(url_for("login"))
+  
   except:
     return(redirect(url_for("internal_server_error")))
+
 
 @app.route("/api/reset_password",methods=["GET","POST"])
 def password_reset():
