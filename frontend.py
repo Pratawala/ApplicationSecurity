@@ -9,6 +9,7 @@ from __main__ import app
 from main import Users_db, db, Item_db, bcrypt, Cart_db, key,ciphertext_file,MyAes
 import pickle
 import json
+import re
 from json import JSONEncoder
 
 @app.route("/")
@@ -19,26 +20,43 @@ def main():
 def login():
   return render_template('frontend/login.html')
 
+
 @app.route("/signup")
 def signup():
   return render_template("/frontend/signup.html",error="")
     
+
 @app.route("/login/signin",methods=["GET","POST"])
 def signin():
+  regex_for_sanitaisation= ("^[A-Za-z0-9]*$")
+  sanitise = re.compile(regex_for_sanitaisation)
+
   current_user = ""
   try: 
     username = request.form.get("username")
+    if  (re.search(sanitise, username)):
+        pass
+    else:
+        return render_template("/frontend/login_fail.html")
+
+
     password = request.form.get("password")
     exists = db.session.query(Users_db.username).filter_by(username=username).first() is not None
+
   except:
     return(redirect(url_for("login")))
+
+
   if exists == True:
     current_user = Users_db.query.get(username)
+
     if current_user.login_attempt > 3:
+      # flash("Login too many times, account has been deactivated")
       current_user.active = False
       db.session.commit()
-      flash("Login too many times,account has been deactivated")
-      return redirect(url_for("login"))
+      
+      return render_template("/frontend/account_locked.html")
+
     if bcrypt.check_password_hash(current_user.password,password): 
       login_user(current_user)
       current_user.token = get_random_string(8)
@@ -49,38 +67,95 @@ def signin():
       response = redirect(url_for("main"))
       ##response.set_cookie('token', token, max_age=60*60*24) #create cookie, set cookie to expire after 24h(60s x 60m x 24h)
       return response
+
     else:
       current_user.login_attempt += 1
       db.session.commit()
-      return render_template("/frontend/login_fail.html")
-  return render_template("/frontend/login_fail.html")
+      flash(f"Login failed Atteps reamining: {3-current_user.login_attempt}")
+      return redirect(url_for("login"))
+  return redirect(url_for("login"))
+
+
 @app.route("/signup/create",methods=["GET","POST"])
 def create_account():
+  flash("")
+
+  # ReGex to check if a string
+    # contains uppercase, lowercase
+    # special character & numeric value
+  regex_for_policy = ("^(?=.*[a-z])(?=." +
+            "*[A-Z])(?=.*\\d)" +
+            "(?=.*[-+_!@#$%^&*., ?]).+$")
+  
+  regex_for_sanitaisation= ("^[A-Za-z0-9]*$")
+  p = re.compile(regex_for_policy)
+  sanitise = re.compile(regex_for_sanitaisation)
+
+
   exists = False
   try:
     new_username = request.form.get("username")
+    if(re.search(sanitise, new_username)):
+        pass
+    else:
+        flash("User name can only contain Latin alphabet (A-Z or a-z) and Numbers (0-9)")
+        return redirect(url_for("signup"))
+ #input sanitaisation 
+     
+
     new_password = request.form.get("password")
     confirm_password = request.form.get("confirm_password")
-    exists = db.session.query(Users_db.username).filter_by(username=new_username).first() is not None
+    # for j in range(len(confirm_password)): #input sanitaisation 
+    #   if confirm_password[j] in reject:
+    #     flash('Password is too common') #security through obscurity (conceal input sanitaisation process)
+    #     return redirect(url_for("signup"))
+    
+
+    exists = db.session.query(Users_db.username).filter_by(username=new_username).first() is not None #queries database for username
+
     if exists == True:
       flash('Username already exists')
       return redirect(url_for("signup"))
+
     if new_password != confirm_password:
       flash("Passwords do not match")
       return redirect(url_for("signup"))
-    if len(new_username) > 15 or len(new_username) < 8:
-      flash('Username length should be within 8-15 letters')
+
+    if len(new_username) > 25 or len(new_username) < 8:
+      flash('Username length should be within 8-25 characters')
       return redirect(url_for("signup"))
-    if len(new_password) > 35 or len(new_password) < 8:
-      flash('Password length should be within 8-35 letters')
+
+    if len(new_password) > 64 or len(new_password) < 8:
+      flash('Password length should be within 8-64 characters')
       return redirect(url_for("signup"))
-    new_password_hash = bcrypt.generate_password_hash(new_password)
-    new_user = Users_db(new_username,new_password_hash)
+
+    if new_password == new_username:
+      flash('Password cannot be same as username!')
+      return redirect(url_for("signup"))
+
+    common = ["P@ssword123","Pa$$word123","Qwerty@123", new_username+"@123", "P@$$word123"]
+    for i in range(len(common)):
+      if common[i] == new_password:
+        flash('password should not be commonly used ') #security through obscurity (conceal input sanitaisation process)
+        return redirect(url_for("signup"))
+     
+
+
+    if(re.search(p, new_password)):
+        pass
+    else:
+        flash("Password should contain at least one: special character, number from 0-9 and upper/lowercase letter ")
+        return redirect(url_for("signup"))
+
+    new_password_hash = bcrypt.generate_password_hash(new_password) #hashing password
+    new_user = Users_db(new_username,new_password_hash) #entering user's username and hashed password
     db.session.add(new_user)
-    db.session.commit()
-    return redirect(url_for("login"))
+    db.session.commit() 
+    return redirect(url_for("login")) 
+
   except:
-    return redirect(url_for("internal_server_error"))
+    #pass
+    return redirect(url_for("internal_server_error")) # please only enable pass in production
 
 # @app.route("/api/getcart")
 # def get_cart():
