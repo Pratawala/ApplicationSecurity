@@ -83,17 +83,19 @@ def create_account():
     if new_password != confirm_password:
       flash_msg("Passwords do not match") #reject if password is not the same as the confirm password field
       return redirect(url_for("signup"))
-    if len(new_username) > 15 or len(new_username) < 8:
-      flash_msg('Username length should be within 8-15 letters')
+    if len(new_username) > 24 or len(new_username) < 8:
+      flash_msg('Username length should be within 8-24 letters')
       return redirect(url_for("signup"))
-    
-    regex_password = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+    if len(new_password) >63:
+      flash_msg('Password is too long')
+      return redirect(url_for("signup"))
+    regex_password = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$"
     if re.search(regex_password,new_password) == None: #checks if password meets minimum requirements
       flash_msg('''At least one upper case English letter,
 At least one lower case English letter,
 At least one digit,
 At least one special character,
-Minimum eight characters''')
+Minimum 12 characters''')
       return redirect(url_for("signup"))
 
     regex_email = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
