@@ -9,7 +9,6 @@ from __main__ import app
 from main import Users_db, db, Item_db, bcrypt, Cart_db, key,ciphertext_file,MyAes
 import pickle
 import json
-import re
 from json import JSONEncoder
 
 @app.route("/")
@@ -20,12 +19,10 @@ def main():
 def login():
   return render_template('frontend/login.html')
 
-
 @app.route("/signup")
 def signup():
   return render_template("/frontend/signup.html",error="")
     
-
 @app.route("/login/signin",methods=["GET","POST"])
 def signin():
   regex_for_sanitaisation= ("^[A-Za-z0-9]*$")
@@ -64,7 +61,10 @@ def signin():
       db.session.commit()
       user_session["token"] = current_user.token
       user_session["admin"] = current_user.admin
-      response = redirect(url_for("main"))
+      if current_user.admin == True:
+        response = redirect(url_for("main_admin"))
+      else:
+        response = redirect(url_for("main"))
       ##response.set_cookie('token', token, max_age=60*60*24) #create cookie, set cookie to expire after 24h(60s x 60m x 24h)
       return response
 
@@ -104,6 +104,7 @@ def create_account():
      
 
     new_password = request.form.get("password")
+    new_email = request.form.get("email")
     confirm_password = request.form.get("confirm_password")
     # for j in range(len(confirm_password)): #input sanitaisation 
     #   if confirm_password[j] in reject:
@@ -116,39 +117,22 @@ def create_account():
     if exists == True:
       flash('Username already exists')
       return redirect(url_for("signup"))
-
     if new_password != confirm_password:
       flash("Passwords do not match")
       return redirect(url_for("signup"))
-
-    if len(new_username) > 25 or len(new_username) < 8:
-      flash('Username length should be within 8-25 characters')
+    if len(new_username) > 15 or len(new_username) < 8:
+      flash('Username length should be within 8-15 letters')
       return redirect(url_for("signup"))
-
-    if len(new_password) > 64 or len(new_password) < 8:
-      flash('Password length should be within 8-64 characters')
+    if len(new_password) > 35 or len(new_password) < 8:
+      flash('Password length should be within 8-35 letters')
       return redirect(url_for("signup"))
-
-    if new_password == new_username:
-      flash('Password cannot be same as username!')
+    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    print(re.search(regex,new_email))
+    if (re.search(regex,new_email) == None):
+      flash("Invalid email address")
       return redirect(url_for("signup"))
-
-    common = ["P@ssword123","Pa$$word123","Qwerty@123", new_username+"@123", "P@$$word123"]
-    for i in range(len(common)):
-      if common[i] == new_password:
-        flash('password should not be commonly used ') #security through obscurity (conceal input sanitaisation process)
-        return redirect(url_for("signup"))
-     
-
-
-    if(re.search(p, new_password)):
-        pass
-    else:
-        flash("Password should contain at least one: special character, number from 0-9 and upper/lowercase letter ")
-        return redirect(url_for("signup"))
-
-    new_password_hash = bcrypt.generate_password_hash(new_password) #hashing password
-    new_user = Users_db(new_username,new_password_hash) #entering user's username and hashed password
+    new_password_hash = bcrypt.generate_password_hash(new_password)
+    new_user = Users_db(new_username,new_password_hash,new_email)
     db.session.add(new_user)
     db.session.commit() 
     return redirect(url_for("login")) 
@@ -268,12 +252,13 @@ def add_card():
       # encode plaintext, then encrypt
   try:
     card_detail = request.form.get("card_number")
-    card_expiry_date = request.form.get("expiry_date")
+    card_expiry_date = request.form.get("expiry_date_month") + "/" + request.form.get("expiry_date_year")
     card_cvv = request.form.get("cvv")
     token = user_session["token"]
     exists = db.session.query(Users_db.token).filter_by(token=token).first() is not None
     if exists == True:
       current_user = Users_db.query.filter_by(token=token).first()
+      key = MyAes.get_fixed_key()
       ciphertext = MyAes.encrypt(key, card_detail.encode("utf8"))
       expiry_date_ciphertext = MyAes.encrypt(key, card_expiry_date.encode("utf8"))
       cvv_ciphertext = MyAes.encrypt(key, card_cvv.encode("utf8"))
@@ -305,4 +290,12 @@ def card_details():
   except:
     return(redirect(url_for("internal_server_error")))
    
-
+@app.route("/is_xml",methods=['GET', 'POST'])
+def is_xml():
+  if request.method == "POST":
+        passwords = request.get_json()
+        if passwords["password"] == passwords["confirm_password"]:
+          same_password = True
+        else:
+          same_password = False
+        return jsonify({"same_password":same_password})
